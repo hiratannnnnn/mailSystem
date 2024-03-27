@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <base target="_top">
+    <style>
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+        text-align: center;
+        background-color: #ffe5e5;
+      }    
+      @media screen and (max-width: 600px) {
+        #login-section {
+            width: 100%; /* 画面いっぱいに広げる */
+            /* その他必要なスタイル */
+        }
+        #matches-list td {
+        //writing-mode: vertical-rl; /* テーブルのセルのテキストを縦書きにする */
+        }
+      }
+
+      .main-content {
+        width: 100%; /* コンテンツの幅をビューポートの幅いっぱいに設定 */
+        max-width: 100%; /* 最大幅もビューポートの幅に合わせる */
+        margin: 0 auto; /* 上下のマージンを0に、左右のマージンを自動に設定して中央寄せ */
+        padding: 20px; /* 内側の余白を設定 */
+        text-align: center;
+      }
+
+      .hidden {
+        display: none;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 10px;
+        border: 1px solid #888;
+        width: 80%;
+        text-align: left;
+      }
+
+      #matches {
+        text-align: center;
+        overflow-x: auto;
+      }
+
+      #matches-list {
+        margin: 0 auto;
+        width: 100%;
+        border-collapse: collapse;
+        max-width: 1000px;
+      }
+
+      #matches-list th, #matches-list td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid black;
+      }
+
+      #matches-list th:nth-child(1), #matches-list td:nth-child(1) {
+        width: 20%;
+        //text-decoration: underline;
+        font-weight: bold;
+      }
+
+      #matches-list th:nth-child(2), #matches-list td:nth-child(2) {
+        width: 35%;
+      }
+
+      #matches-list th:nth-child(3), #matches-list td:nth-child(3) {
+        width: 10%;
+      }
+
+      #matches-list th:nth-child(4), #matches-list td:nth-child(4) {
+        width: 20%;
+        font-weight: bold;
+      }
+
+      #matches-list th:nth-child(5), #matches-list td:nth-child(5) {
+        width: 15%;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .info-button {
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      button, input[type="text"], input[type="password"] {
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #000; /* ボーダーを黒色に */
+        border-radius: 5px;
+        outline: none;
+        font-size: 16px;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="login-section">
+      <h1>慶應かるた会<br>大会案内</h1>
+      <p>ログインしてください。</p>
+      <form id="login-form">
+        <label for="username">ユーザー名:</label><br>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">パスワード:</label><br>
+        <input type="password" id="password" name="password"><br>
+        <button type="button" id="login-button">ログイン</button>
+    </div>
+    <div class="flex-item">
+      <div id="main-content" class="hidden">
+        <h1>慶應かるた会</h1>
+        <h2>大会案内</h2>
+        <p>
+          現在申込受付中の大会の一覧です。日時に「など」がついている場合は級によって開催日が違いますのでご注意ください。申込締切を過ぎてしまった場合でも、大会側に連絡すればまだ間に合う可能性はありますので、大会案内係、または副会長までご相談ください。
+        </p>
+
+        <div id="matches">
+          <table id="matches-list">
+            <colgroup>
+              <col class="col-date">
+              <col class="col-tournament">
+              <col class="col-info">
+              <col class="col-deadline">
+              <col class="col-url">
+            </colgroup>
+            <tbody>
+              <tr id="remove0">
+                <td id="remove1">大会日時</td>
+                <td>大会名</td>
+                <td id="temp3">案内</td>
+                <td>申込期限</td>
+                <td id="remove2">申込フォーム</td>
+              </tr>
+              <!-- JavaScriptで動的に行が追加されます -->
+            </tbody>
+            <div id="loading-spinner">更新中…（時間を要することがあります。）</div>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modal-text"></p>
+      </div>
+    </div>
+    <script>
+      // ログイン関連の処理
+      document.getElementById("login-button").addEventListener("click", function() {
+        event.preventDefault();
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        google.script.run
+          .withSuccessHandler(function(response) {
+            if(response === "success") {
+              document.getElementById("login-section").classList.add("hidden");
+              document.getElementById("main-content").classList.remove("hidden");
+            } else {
+              alert("ログイン失敗");
+            }
+          }).checkLogin(username, password);
+      });
+
+      // モーダル関連の変数とイベントリスナー
+      var modal = document.getElementById("modal");
+      var modalText = document.getElementById("modal-text");
+      var span = document.getElementsByClassName("close")[0];
+
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      // データ取得とテーブル更新
+      function pageLoadComplete() {
+        // ページに埋め込まれたデータを取得
+        var data = <?!= JSON.stringify(data) ?>;
+        updateMatchesTable(data);
+        document.getElementById("loading-spinner").classList.add("hidden");
+      }
+
+      window.onload = pageLoadComplete;
+
+      function updateMatchesTable(data) {
+        var tableBody = document.getElementById('matches-list').getElementsByTagName('tbody')[0];
+        //tableBody.innerHTML = ''; //なしでもとりあえず動いているというか、再更新するタイミングがないため、これで。
+        var screenWidth = window.innerWidth;
+        data.forEach((row, rowIndex) => {
+          var tr = document.createElement('tr');
+          if(row[5] === '申込前') {
+            tr.style.backgroundColor="white";
+          } else {
+            tr.style.backgroundColor="#d3d3d3";
+          }
+          row.pop();
+          if(screenWidth <= 600){
+            try{
+              var parentElement = document.getElementById("remove0"); // 親要素を取得
+              var childElement1 = document.getElementById("remove1"); // 削除する子要素を取得
+              parentElement.removeChild(childElement1); // 子要素を削除
+              var childElement2 = document.getElementById("remove2");
+              parentElement.removeChild(childElement2);
+
+              var childElement3 = document.getElementById("temp3");
+              parentElement.removeChild(childElement3);
+              parentElement.appendChild(childElement3);
+            } catch(e) {}
+            
+            row.pop();
+            var temp = row[2];
+            row[2] = row[3];
+            row[3] = temp;
+            row.shift();
+          }
+          row.forEach((cell, cellIndex) => {
+            var td = document.createElement('td');
+            if(screenWidth > 600 && cellIndex === 0) {
+              cell = cell.replace("-","年").replace("-","月") + "日";
+              td.textContent = convertToFullWidthNumbers(cell).replace("など日", "日など");
+            } else if (cellIndex === 2) {
+              td.textContent = '案内';
+              td.classList.add('info-button');
+              td.addEventListener('click', function() {
+                showInfoModal(row[2]);
+              });
+            } else if (cellIndex === 4){
+              var a = document.createElement('a');
+              a.href = cell;
+              a.textContent = "https:...";
+              a.target = '_blank';
+              td.appendChild(a);
+            } else {
+              if(screenWidth <= 600 && cellIndex === 1){
+                cell = "申込期限：<br>" + cell;
+                td.innerHTML = cell;//変更点
+              } else {
+                td.textContent = cell;
+              }
+            }
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+      }
+
+      function showInfoModal(infoText) {
+        modalText.innerHTML = convertUrlsToLinks(infoText);
+        modal.style.display = 'block';
+      }
+
+      function convertUrlsToLinks(text) {
+        var urlRegex = /https:\/\/[^\s]+?\/viewform\b/g;
+        return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '" target="_blank">' + url + '</a>';
+        });
+      }
+      function convertToFullWidthNumbersIfSmallScreen(str) {
+        var screenWidth = window.innerWidth;
+        if (screenWidth <= 600) {
+          return str.replace(/[0-9A-E]/g, function(match) {
+            if (match >= '0' && match <= '9') {
+              return String.fromCharCode(match.charCodeAt(0) + 0xFEE0);
+            } else {
+              return String.fromCharCode(match.charCodeAt(0) + 0xFEE0);
+            }
+          });
+        } else {
+          return str;
+        }
+      }
+
+      function convertToFullWidthNumbers(str) {
+        return str.replace(/[0-9]+/g, function(match) {
+          // 十の位が0で、2文字以上の数字の場合、0を取り除く
+          if (match.length > 1 && match.startsWith('0')) {
+            match = match.substring(1);
+          }
+
+          return match.split('').map(function(char) {
+            if (char >= '0' && char <= '9') {
+              return String.fromCharCode(char.charCodeAt(0) + 0xFEE0);
+            } else {
+              return char;
+            }
+          }).join('');
+        });
+      }
+
+    </script>
+
+  </body>
+</html>
