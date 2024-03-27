@@ -95,6 +95,7 @@ function sendPaymentReminders(ss,emailSheet,now,rowNum) {
     for (var j = 0; j < data.length; j++) {
       var email = data[j][0];
       var name = data[j][1];
+      if(name.includes(" ") || name.includes("　"))continue;
       var paymentStatus = data[j][count+1];
       Logger.log(paymentStatus);
       if (paymentStatus === '') {
