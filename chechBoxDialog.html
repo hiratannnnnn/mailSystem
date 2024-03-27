@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .large-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+      button {
+        width: 100px; /* ボタンの幅 */
+        height: 50px; /* ボタンの高さ */
+        font-size: 16px; /* フォントサイズ */
+        margin: 10px; /* ボタン間のマージン */
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="myForm">
+      <!-- チェックボックス -->
+      <label><input type="checkbox" class="large-checkbox" name="option1" value="Option1"> 【大会日時】を確認した。<br></label>
+      <label><input type="checkbox" class="large-checkbox" name="option2" value="Option2"> その他の情報を確認した。<br></label>
+      <label><input type="checkbox" class="large-checkbox" name="option3" value="Option3"> 【会内締め切り】を確認した。<br></label>
+      <div>
+        <p>すべてのチェックボックスをクリックし、「OK」を押してください。<br>更新する情報がある場合は「戻る」で戻ってください。</p>
+      </div>
+      <br>
+      <!-- ボタン -->
+      <button type="button" onclick="processBack()">戻る</button>
+      <button type="button" onclick="submitForm()">OK</button>
+    </form>
+
+    <script>
+      function submitForm() {
+        // OKボタンの処理
+        google.script.run.withSuccessHandler(function(){
+            google.script.host.close();
+        }).processOK(document.getElementById('myForm'));
+        google.script.host.close();
+      }
+
+      function processBack() {
+        // 戻るボタンの処理
+        google.script.run.withSuccessHandler(function(){
+            google.script.host.close();
+        }).processBack();
+      }
+    </script>
+  </body>
+</html>
