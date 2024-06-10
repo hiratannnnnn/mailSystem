@@ -5,7 +5,7 @@ function doGet() {
 }
 
 function getSpreadsheetData() {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("*******************");
   var emailSheet = ss.getSheetByName("メール管理");
   var calendarSheet = ss.getSheetByName("カレンダー");
 
