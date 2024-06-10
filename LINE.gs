@@ -156,7 +156,7 @@ function sendReplyMessage(replyToken, messages) {
 
 
 function registerFullName(userId, fullName) {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("**********************");
   var userListSheet = ss.getSheetByName("LINE");
   var dataRange = userListSheet.getDataRange();
   var values = dataRange.getValues();
@@ -180,7 +180,7 @@ function registerFullName(userId, fullName) {
 }
 
 function findFullName(userId) {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("*************************");
   var userListSheet = ss.getSheetByName("LINE");
   var data = userListSheet.getDataRange().getValues();
   for (i=1;i<data.length;i++) {
@@ -192,7 +192,7 @@ function findFullName(userId) {
 }
 
 function findUserId(fullName) {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("***********************");
   var userListSheet = ss.getSheetByName("LINE");
   var data = userListSheet.getDataRange().getValues();
   for (i=1;i<data.length;i++) {
@@ -204,7 +204,7 @@ function findUserId(fullName) {
 }
 
 function recordMessage(userId,message) {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("****************************");
   var userListSheet = ss.getSheetByName("LINE");
   var data = userListSheet.getDataRange().getValues();
   for (i=1;i<data.length;i++) {
@@ -215,7 +215,7 @@ function recordMessage(userId,message) {
 }
 
 function lookupFurikomi(fullName) {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("************************");
   var calendarSheet = ss.getSheetByName("カレンダー");
   var calendarData = calendarSheet.getDataRange().getValues();
   var matchList = [];
@@ -258,7 +258,7 @@ function lookupFurikomi(fullName) {
 }
 
 function lookupMoshikomi() {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("**************************");
   var calendarSheet = ss.getSheetByName("カレンダー");
   var calendarData = calendarSheet.getDataRange().getValues();
   var matchList = [];
@@ -325,7 +325,7 @@ function sendPushMessage(userId, messageText) {
 }
 
 function fetchAnnounce(userMessage) {
-  var ss = SpreadsheetApp.openById("1KfxkE6RdW-u0AciuqGUMH9P1zeuOkBVa5Y6iTOzy6Hc");
+  var ss = SpreadsheetApp.openById("*******************************");
   var calendarSheet = ss.getSheetByName("カレンダー");
   var data = calendarSheet.getDataRange().getValues();
   for (i=data.length-1;i>1;i--) {
